@@ -1,0 +1,38 @@
+{
+  "name": "Inquiry",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string"
+    },
+    "company": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "project_type": {
+      "type": "string"
+    },
+    "estimated_value": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "file_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "full_name",
+    "email",
+    "message"
+  ]
+}

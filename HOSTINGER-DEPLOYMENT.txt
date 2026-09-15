@@ -1,0 +1,17 @@
+VERTEX SYNERGY - HOSTINGER DEPLOYMENT
+
+1. Upload ALL files/folders from this package into Hostinger public_html.
+2. Make sure PHP 8.1+ is enabled.
+3. Ensure these folders are writable (755 normally works; use 775 if required):
+   api/data
+   uploads
+4. Open your domain. React routing is handled by .htaccess.
+5. Admin login: /login
+   Email: admin@vertexsynergy.com
+   Temporary password: ChangeMe-Vertex-2026!
+   IMPORTANT: change the password hash in api/settings.php before production.
+
+This package no longer uses the Base44 SDK or Base44 API for forms/data/authentication.
+The original Base44-hosted media files could not be fetched automatically in the build environment. Any remaining media.base44.com URLs should be downloaded and replaced with local /assets URLs before cancelling Base44 if those URLs stop serving publicly.
+
+Dynamic storage is JSON-based for easy Hostinger deployment. For high traffic or a large project database, migrate api/data to MySQL later.

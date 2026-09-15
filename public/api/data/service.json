@@ -1,0 +1,10 @@
+[
+ {"id":"s1","name":"Civil Engineering","description":"RCC structures, concrete construction, roads and infrastructure development for industrial and commercial projects.","layer":"50+ Projects","order":1},
+ {"id":"s2","name":"Electrical Systems","description":"Substations, power distribution, lighting systems, and smart controls for all project types.","layer":"80+ Projects","order":2},
+ {"id":"s3","name":"Plumbing & Drainage","description":"Water supply, drainage, sewage, fire fighting, and specialized installations for high-end projects.","layer":"60+ Projects","order":3},
+ {"id":"s4","name":"MEP Services","description":"Integrated Mechanical, Electrical, and Plumbing services ensuring efficient execution and optimal building performance.","layer":"100+ Projects","order":4},
+ {"id":"s5","name":"Landscape & Hardscape","description":"Master planning, irrigation, hardscape design, sports facilities, and sustainable drainage solutions.","layer":"25+ Projects","order":5},
+ {"id":"s6","name":"Project Management","description":"End-to-end project management ensuring timely delivery, budget compliance, and quality assurance.","layer":"150+ Projects","order":6},
+ {"id":"s7","name":"Temporary Facilities","description":"Portacabin installations, complete with MEP services and amenities.","layer":"300+ Cabins","order":7},
+ {"id":"s8","name":"Security Systems","description":"CCTV, access control, perimeter detection, and integrated security systems.","layer":"40+ Projects","order":8}
+]

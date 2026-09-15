@@ -1,0 +1,40 @@
+{
+  "name": "ModelAsset",
+  "type": "object",
+  "properties": {
+    "slot": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "file_url": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "slot",
+    "file_url"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

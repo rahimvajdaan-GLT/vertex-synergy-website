@@ -1,0 +1,114 @@
+{
+  "name": "Project",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Commercial",
+        "Residential",
+        "Hospitality",
+        "Infrastructure",
+        "Industrial",
+        "Healthcare",
+        "Government"
+      ]
+    },
+    "client": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Completed",
+        "Ongoing",
+        "Upcoming"
+      ],
+      "default": "Completed"
+    },
+    "year": {
+      "type": "string"
+    },
+    "completion_percentage": {
+      "type": "number",
+      "default": 100
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "completion_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "contract_value": {
+      "type": "string"
+    },
+    "built_up_area": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "scope_of_work": {
+      "type": "string"
+    },
+    "main_image": {
+      "type": "string"
+    },
+    "gallery_images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "project_video": {
+      "type": "string"
+    },
+    "key_stats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "challenges": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "solutions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "achievements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "title"
+  ]
+}
