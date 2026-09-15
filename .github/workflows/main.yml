@@ -1,0 +1,40 @@
+name: Build Vertex Synergy Website
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build website
+        run: npm run build
+
+      - name: Copy SPA fallback
+        run: cp dist/index.html dist/404.html
+
+      - name: Publish compiled website
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: production
+          clean: true
