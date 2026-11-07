@@ -1,0 +1,70 @@
+name: Weekly AI SEO and maintenance proposals
+
+on:
+  schedule:
+    - cron: '41 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: vertex-ai-review
+  cancel-in-progress: false
+
+jobs:
+  propose:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout source only
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Run public SEO audit
+        id: seo
+        continue-on-error: true
+        run: python3 scripts/seo_audit.py
+      - name: Review npm dependency advisories without modifying dependencies
+        run: npm audit --json > npm-audit.json || true
+      - name: Create proposal report (AI optional)
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          AI_REVIEW_MODEL: gpt-4.1-mini
+        run: python3 scripts/ai_maintenance_review.py
+      - name: Upload report regardless of PR permission
+        uses: actions/upload-artifact@v4
+        with:
+          name: vertex-weekly-review
+          path: reports/latest-review.md
+          retention-days: 30
+      - name: Open a draft proposal PR (no website files edited)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # Avoid opening multiple weekly draft review PRs concurrently.
+          if gh pr list --state open --base main --json title --jq '.[].title' \
+            | grep -Fxq 'Weekly VSY AI SEO and Maintenance Review'; then
+            echo "Existing proposal PR awaiting review; leaving it untouched."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          branch="review/ai-seo-${GITHUB_RUN_ID}"
+          git switch -c "$branch"
+          git add reports/latest-review.md
+          git commit -m "Add weekly AI SEO and maintenance proposal"
+          git push origin "$branch"
+          gh pr create --draft --base main --head "$branch" \
+            --title 'Weekly VSY AI SEO and Maintenance Review' \
+            --body 'Automatically generated report ONLY. Review audit facts, potential errors and any AI recommendations. No application files changed. Do not merge until reviewed. Production remains protected and is never updated by this job.'
