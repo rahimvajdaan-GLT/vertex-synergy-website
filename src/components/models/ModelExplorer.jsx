@@ -4,7 +4,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { Maximize2, RotateCw, Crosshair, Eye, EyeOff } from "lucide-react";
+import { Maximize2, RotateCw, Crosshair } from "lucide-react";
 import { MODEL_FILES } from "@/lib/modelAssets";
 
 const SYSTEMS = [
