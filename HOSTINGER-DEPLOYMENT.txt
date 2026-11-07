@@ -1,17 +1,17 @@
-VERTEX SYNERGY - HOSTINGER DEPLOYMENT
+VERTEX SYNERGY - HOSTINGER HOSTING NOTES
 
-1. Upload ALL files/folders from this package into Hostinger public_html.
-2. Make sure PHP 8.1+ is enabled.
-3. Ensure these folders are writable (755 normally works; use 775 if required):
-   api/data
-   uploads
-4. Open your domain. React routing is handled by .htaccess.
-5. Admin login: /login
-   Email: admin@vertexsynergy.com
-   Temporary password: ChangeMe-Vertex-2026!
-   IMPORTANT: change the password hash in api/settings.php before production.
+This application is a Vite/React frontend with a PHP backend.
+Production is deployed by Hostinger from the protected production branch.
 
-This package no longer uses the Base44 SDK or Base44 API for forms/data/authentication.
-The original Base44-hosted media files could not be fetched automatically in the build environment. Any remaining media.base44.com URLs should be downloaded and replaced with local /assets URLs before cancelling Base44 if those URLs stop serving publicly.
+IMPORTANT SECURITY REQUIREMENTS:
+- Never commit or publish admin passwords, hashes, API credentials, or runtime JSON data.
+- Administrator configuration is maintained by the site owner on Hostinger only.
+- The production PHP API currently uses api/settings.php; preserve that file until a
+  separate tested migration moves the secret outside the public webroot.
+- Rotate any credentials ever disclosed in prior commits or setup documentation.
+- Hostinger backups and api/data/ must remain private and preserved during releases.
+- To release: use Actions > Prepare manual Hostinger release PR; review draft PR,
+  make a Hostinger backup, and manually merge to production if approved.
+- Never push directly to production.
 
-Dynamic storage is JSON-based for easy Hostinger deployment. For high traffic or a large project database, migrate api/data to MySQL later.
+For the detailed procedure and outstanding security work, see SECURE-RELEASE.md.

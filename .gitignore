@@ -30,3 +30,9 @@ dist-ssr
 .env
 .vite
 base44/.app.jsonc
+
+# Hostinger runtime secrets, never commit or publish
+public/api/settings.php
+public/api/data/*.json
+public/uploads/
+dist/api/settings.php
