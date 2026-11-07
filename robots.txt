@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /login
+Disallow: /admin/
+Disallow: /models
+
+Sitemap: https://www.vsyenergy.com/sitemap.xml
