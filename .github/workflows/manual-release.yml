@@ -1,0 +1,77 @@
+name: Prepare manual Hostinger release PR
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: prepare-hostinger-release
+  cancel-in-progress: false
+
+jobs:
+  propose:
+    # Never allow a manual run from an unreviewed feature branch.
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout approved source
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: source
+      - name: Checkout current production
+        uses: actions/checkout@v4
+        with:
+          ref: production
+          path: release
+          persist-credentials: true
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+      - name: Build
+        working-directory: source
+        run: |
+          npm ci
+          npm run build
+          cp dist/index.html dist/404.html
+      - name: Validate protected runtime files
+        run: |
+          test ! -e source/dist/api/settings.php
+          test ! -e source/dist/api/data
+          test ! -e source/dist/uploads
+      - name: Stage build without modifying live credentials or data
+        run: |
+          # Add/update files without deleting existing production paths.
+          # NEVER replace the site's admin configuration, stored data, or uploads.
+          rsync -a --exclude '/api/settings.php' --exclude '/api/data/***' \
+            --exclude '/uploads/***' source/dist/ release/
+          test -e release/api/settings.php || {
+            echo "::error::Existing production settings.php not found; stop for manual review."
+            exit 1
+          }
+      - name: Open draft production release PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        working-directory: release
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to release."
+            exit 0
+          fi
+          RELEASE_BRANCH="release/manual-$(date -u +%Y%m%d-%H%M%S)-${GITHUB_RUN_ID}"
+          git switch -c "$RELEASE_BRANCH"
+          git commit -m "Prepare manually approved Hostinger release"
+          git push origin "$RELEASE_BRANCH"
+          gh pr create --repo "${GITHUB_REPOSITORY}" --base production \
+            --head "$RELEASE_BRANCH" --draft \
+            --title "Release: manually review Hostinger website build" \
+            --body "REVIEW REQUIRED. This is a generated draft release PR and has NOT been deployed. Inspect changed files and confirm PHP settings, runtime data and uploads are preserved. Merge only after explicit owner approval and a verified Hostinger backup. Merging into production may trigger automatic Hostinger deployment."
