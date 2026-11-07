@@ -74,7 +74,7 @@ function Model({ url, opacity, onStatus }) {
     });
   });
 
-  return <primitive object={scene} ref={objRef} />;
+  // React Three Fiber accepts the object prop on its primitive element.\n  // eslint-disable-next-line react/no-unknown-property\n  return <primitive object={scene} ref={objRef} />;
 }
 
 export default function ModelLoader({ url, opacity = 1, visible = true, onStatus }) {
