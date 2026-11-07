@@ -40,6 +40,8 @@ jobs:
           npm ci
           npm run build
           cp dist/index.html dist/404.html
+          # Runtime data is owned by Hostinger, never by a static release.
+          rm -rf dist/api/data dist/uploads
       - name: Validate protected runtime files
         run: |
           test ! -e source/dist/api/settings.php
