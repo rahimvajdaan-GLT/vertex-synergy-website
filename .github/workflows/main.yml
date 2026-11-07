@@ -1,40 +1,45 @@
-name: Build Vertex Synergy Website
+name: Validate Vertex Synergy Website
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout source
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
           cache: npm
-
       - name: Install dependencies
         run: npm ci
-
-      - name: Build website
+      - name: Verify private PHP admin configuration is not tracked
+        run: |
+          if git ls-files --error-unmatch public/api/settings.php >/dev/null 2>&1; then
+            echo "::error::Never track public/api/settings.php; administer it on Hostinger only."
+            exit 1
+          fi
+      - name: Lint
+        run: npm run lint
+      - name: Build
         run: npm run build
-
-      - name: Copy SPA fallback
+      - name: Ensure secrets are absent from build
+        run: |
+          if [ -e dist/api/settings.php ]; then
+            echo "::error::The deployable build contains the admin password configuration."
+            exit 1
+          fi
+      - name: SPA fallback
         run: cp dist/index.html dist/404.html
-
-      - name: Publish compiled website
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: dist
-          branch: production
-          clean: true
