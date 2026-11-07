@@ -31,6 +31,8 @@ jobs:
             echo "::error::Never track public/api/settings.php; administer it on Hostinger only."
             exit 1
           fi
+      - name: Verify SEO assets and SPA routing
+        run: python3 scripts/test_seo_assets.py
       - name: Lint
         run: npm run lint
       - name: Build
