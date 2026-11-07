@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout checked-in audit script
         uses: actions/checkout@v4
+      - name: Test SEO validators
+        run: python3 -m unittest discover -s scripts -p 'test_seo_validation.py' -v
       - name: Audit public website without changing it
         env:
           SEO_SITE_URL: https://www.vsyenergy.com/
