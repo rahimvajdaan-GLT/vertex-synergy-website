@@ -33,6 +33,8 @@ jobs:
           fi
       - name: Verify SEO assets and SPA routing
         run: python3 scripts/test_seo_assets.py
+      - name: Verify PHP API syntax
+        run: php -l public/api/index.php
       - name: Lint
         run: npm run lint
       - name: Build
