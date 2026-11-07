@@ -20,3 +20,10 @@ subject to GitHub Actions scheduling delays.
 
 This is a baseline, not a full AI SEO agent. Search Console integration and AI-generated
 improvement proposals require separate, reviewed setup and permitted credentials.
+
+## Validity checks and alert behavior
+- A successful HTTP 200 alone is not enough: verify crawler directives and actual XML sitemap structure, including the site origin.
+- Verify the homepage canonical and Open Graph metadata.
+- If a critical check fails, the workflow becomes red and uploads the JSON report using `if: always()`.
+- These are automated status findings, not a replacement for browser-based SEO or Google Search Console. No Google account is required.
+- Run validators without network calls using `python3 -m unittest discover -s scripts -p 'test_seo_validation.py' -v`.
