@@ -53,8 +53,10 @@ jobs:
           # NEVER replace the site's admin configuration, stored data, or uploads.
           rsync -a --exclude '/api/settings.php' --exclude '/api/data/***' \
             --exclude '/uploads/***' source/dist/ release/
-          test -e release/api/settings.php || {
-            echo "::error::Existing production settings.php not found; stop for manual review."
+          # Legacy tracked administrator settings must be removed from production.
+          # Never generate a release while this secret-bearing file is present.
+          test ! -e release/api/settings.php || {
+            echo "::error::Tracked administrator settings remain in production; security cleanup required."
             exit 1
           }
       - name: Open draft production release PR
