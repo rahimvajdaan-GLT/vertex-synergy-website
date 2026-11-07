@@ -1,0 +1,33 @@
+name: Daily VSY public SEO audit
+
+on:
+  schedule:
+    - cron: '17 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vertex-readonly-seo-audit
+  cancel-in-progress: true
+
+jobs:
+  public-seo-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout checked-in audit script
+        uses: actions/checkout@v4
+      - name: Audit public website without changing it
+        env:
+          SEO_SITE_URL: https://www.vsyenergy.com/
+        run: python3 scripts/seo_audit.py
+      - name: Save SEO report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vertex-seo-report
+          path: seo-report.json
+          retention-days: 30
+          if-no-files-found: warn
