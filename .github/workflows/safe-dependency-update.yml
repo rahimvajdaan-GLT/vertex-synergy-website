@@ -1,0 +1,70 @@
+name: Prepare safe dependency maintenance PR
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: vertex-safe-dependency-update
+  cancel-in-progress: false
+
+jobs:
+  propose:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Install current dependencies
+        run: npm ci --ignore-scripts
+      - name: Record existing dependency vulnerabilities
+        run: npm audit --json > /tmp/vsy-audit-before.json || true
+      - name: Apply non-forced lockfile-only npm security fixes
+        run: npm audit fix --package-lock-only --ignore-scripts || true
+      - name: Ensure package manifests and application code were not edited
+        run: |
+          set -euo pipefail
+          git diff --exit-code -- package.json
+          test -z "$(git diff --name-only | grep -v '^package-lock.json$' || true)"
+      - name: Reinstall resolved dependency versions without running scripts
+        run: npm ci --ignore-scripts
+      - name: Validate security and avoid increased critical or high alerts
+        run: |
+          npm audit --json > /tmp/vsy-audit-after.json || true
+          python3 scripts/check_dependency_audit.py /tmp/vsy-audit-before.json /tmp/vsy-audit-after.json
+      - name: Validate application
+        run: |
+          npm run lint
+          python3 scripts/test_seo_assets.py
+          python3 -m unittest discover -s scripts -p 'test_seo_validation.py' -v
+          npm run build
+      - name: Open draft security update PR, never deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git add package-lock.json
+          if git diff --cached --quiet; then
+            echo "No within-range security fixes are currently available."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          branch="maintenance/npm-security-${GITHUB_RUN_ID}"
+          git switch -c "$branch"
+          git commit -m "Update lockfile for available nonbreaking security fixes"
+          git push origin "$branch"
+          gh pr create --draft --base main --head "$branch" \
+            --title 'Maintenance: review safe npm security lockfile updates' \
+            --body 'Draft only. npm audit fix --package-lock-only --ignore-scripts; no --force, no package.json changes. CI: npm ci, lint, SEO checks and Vite build. Review dependency differences, remaining advisories and functional tests before merge. This does NOT deploy to Hostinger.'
