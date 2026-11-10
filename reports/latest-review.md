@@ -1,12 +1,12 @@
 # VSY Energy — AI SEO & Maintenance Review
 
-Audit date: 2026-11-07 (UTC)
+Audit date: 2026-11-09 (UTC)
 
 ## Verified automated findings
 
 - Public website: https://www.vsyenergy.com/
 - SEO audit: No issues flagged by the limited public checks.
-- Dependency audit counts: {'critical': 1, 'high': 8, 'moderate': 9, 'low': 0}
+- Dependency audit counts: {'critical': 0, 'high': 1, 'moderate': 4, 'low': 0}
 
 ## Limitations
 
