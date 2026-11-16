@@ -1,6 +1,6 @@
 # VSY Energy — AI SEO & Maintenance Review
 
-Audit date: 2026-11-09 (UTC)
+Audit date: 2026-11-16 (UTC)
 
 ## Verified automated findings
 
